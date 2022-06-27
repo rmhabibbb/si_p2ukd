@@ -19,6 +19,7 @@ class Daftar extends MY_Controller
             }
         }
         $this->load->model('User_m');
+        $this->load->model('Petugas_m');
     }
 
 
@@ -38,7 +39,7 @@ class Daftar extends MY_Controller
                 $msg = $msg  . 'Email telah digunakan!<br>';
                 $cek++;
             }
-            if ($this->User_m->get_num_row(['email' => $email]) != 0) {
+            if ($this->Petugas_m->get_num_row(['email' => $email]) != 0) {
                 $msg =  $msg  . 'NIP telah digunakan! <br>';
                 $cek++;
             }
@@ -64,16 +65,18 @@ class Daftar extends MY_Controller
                     'email' => $this->POST('email'),
                     'nama_petugas' => $this->POST('nama')
                 ];
-
-
-                $user_session = [
-                    'email' => $this->POST('email'),
-                    'id_role' => 2
-                ];
-                $this->session->set_userdata($user_session);
-                $this->flashmsg('Selamat datang, proses pendaftaran akun anda berhasil, silahkan lengkapi profil anda.', 'success');
-                redirect('petugas');
-                exit();
+                if ($this->Petugas_m->insert($data)) {
+                    $user_session = [
+                        'email' => $this->POST('email'),
+                        'id_role' => 2
+                    ];
+                    $this->session->set_userdata($user_session);
+                    $this->flashmsg('Selamat datang, proses pendaftaran akun anda berhasil, silahkan lengkapi profil anda.', 'success');
+                    redirect('petugas');
+                    exit();
+                } else {
+                    $this->User_m->delete($this->POST('email'));
+                }
             } else {
                 $this->flashmsg('<i class="glyphicon glyphicon-remove"></i> Gagal, Coba lagi!', 'warning');
                 redirect('daftar');
