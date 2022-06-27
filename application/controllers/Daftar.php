@@ -72,7 +72,7 @@ class Daftar extends MY_Controller
                     ];
                     $this->session->set_userdata($user_session);
                     $this->flashmsg('Selamat datang, proses pendaftaran akun anda berhasil, silahkan lengkapi profil anda.', 'success');
-                    redirect('petugas');
+                    redirect('petugas/profil');
                     exit();
                 } else {
                     $this->User_m->delete($this->POST('email'));
