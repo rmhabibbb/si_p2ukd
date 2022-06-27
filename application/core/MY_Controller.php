@@ -9,18 +9,14 @@ class MY_Controller extends CI_Controller
 		// $this->load->library('lib_log');
 	}
 
-	public function template($data, $role = 'administrasi')
+	public function template($data, $role = '')
 	{
-		if ($role == 'administrasi') {
-			return $this->load->view('administrasi/template/layout', $data);
-		} elseif ($role == 'pimpinan') {
-			return $this->load->view('pimpinan/template/layout', $data);
-		} elseif ($role == 'adminsistem') {
-			return $this->load->view('adminsistem/template/layout', $data);
-		} elseif ($role == 'karyawan') {
-			return $this->load->view('karyawan/template/layout', $data);
-		}elseif ($role == 'landing') {
-			return $this->load->view('landing/template/layout', $data);
+		if ($role == '') {
+			return $this->load->view('pages/template/layout', $data);
+		} elseif ($role == 'admin') {
+			return $this->load->view('admin/template/layout', $data);
+		} elseif ($role == 'petugas') {
+			return $this->load->view('petugas/template/layout', $data);
 		}
 		return false;
 	}
