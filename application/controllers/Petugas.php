@@ -152,6 +152,33 @@ class Petugas extends MY_Controller
         }
     }
 
+    public function downloadpdf()
+    {
+        $bulan_start = $this->POST('bulan_start');
+        $bulan_end = $this->POST('bulan_end');
+        $tahun_start = $this->POST('tahun_start');
+        $tahun_end = $this->POST('tahun_end');
+
+        $this->data['laporan'] = $this->Laporan_m->get_laporan($this->data['profil']->nip, $bulan_start, $bulan_end, $tahun_start, $tahun_end);
+
+        if (sizeof($this->data['laporan']) != 0) {
+            $this->load->library('dompdf_gen');
+
+            $this->load->view('laporan_pdf', $this->data);
+
+            $paper_size = 'A4';
+            $orientation = 'potrait';
+            $html = $this->output->get_output();
+            $this->dompdf->set_paper($paper_size, $orientation);
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            $this->dompdf->stream('Laporan Kegiatan.pdf', array('Attachment' => 0));
+        } else {
+            $this->flashmsg('Maaf, tidak ada data pada bulan dan tahun yang anda pilih', 'warning');
+            redirect('petugas/laporan/');
+            exit();
+        }
+    }
 
     public function profil()
     {

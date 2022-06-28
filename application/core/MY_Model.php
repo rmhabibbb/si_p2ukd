@@ -122,7 +122,7 @@ class MY_Model extends CI_Model
 		return $query->result();
 	}
 
-	public function getDataLike2($like,$cond = '')
+	public function getDataLike2($like, $cond = '')
 	{
 		$this->db->select('*');
 		$this->db->like($like);
@@ -130,7 +130,7 @@ class MY_Model extends CI_Model
 			$this->db->where($cond);
 		if (is_string($cond) && strlen($cond) > 3)
 			$this->db->where($cond);
-		
+
 		$query = $this->db->get($this->data['table_name']);
 		return $query->result();
 	}
@@ -160,9 +160,8 @@ class MY_Model extends CI_Model
 	public function required_input($input_names)
 	{
 		$rules = [];
-		foreach ($input_names as $input)
-		{
-			$rules []= [
+		foreach ($input_names as $input) {
+			$rules[] = [
 				'field'		=> $input,
 				'label'		=> ucfirst($input),
 				'rules'		=> 'required'
@@ -174,116 +173,58 @@ class MY_Model extends CI_Model
 
 	public function flashmsg($msg, $type = 'success')
 	{
-		return $this->session->set_flashdata('msg', '<div class="alert alert-'.$type.'">'.$msg.'</div>');
+		return $this->session->set_flashdata('msg', '<div class="alert alert-' . $type . '">' . $msg . '</div>');
 	}
 
 	public function get_col($col)
 	{
-		$query = $this->db->query('SELECT '.$col.' FROM ' . $this->data['table_name']);
+		$query = $this->db->query('SELECT ' . $col . ' FROM ' . $this->data['table_name']);
 		return $query->result();
 	}
 
-	public function group_subunsur($p){
 
-		$this->db->where('unsur' , $p);
-		$this->db->select('kode ,sub_unsur');
-		$this->db->group_by('sub_unsur');  
-		return $this->db->get('kegiatan')->result();
- 		
-	}
-
-	public function cekemail($email){
-		$this->db->where('email' , $email);
+	public function cekemail($email)
+	{
+		$this->db->where('email', $email);
 		$query = $this->db->get($this->data['table_name']);
- 
+
 		$output = "";
-	  	if ( $query->num_rows() != 0  ) {
-	  		$output .= '<i style="color:red">Email telah digunakan!</i>';
-	  	}
-	  	return $output;
+		if ($query->num_rows() != 0) {
+			$output .= '<i style="color:red">Email telah digunakan!</i>';
+		}
+		return $output;
 	}
 
-	public function cekpasslama($email,$pass){
-		$this->db->where('email' , $email);
+	public function cekpasslama($email, $pass)
+	{
+		$this->db->where('email', $email);
 		$query = $this->db->get($this->data['table_name'])->row();
- 
+
 		$output = "";
-	  	if ( $query->password != md5($pass)  ) {
-	  		$output .= '<i style="color:red">Password Salah!</i>';
-	  	}
-	  	return $output;
+		if ($query->password != md5($pass)) {
+			$output .= '<i style="color:red">Password Salah!</i>';
+		}
+		return $output;
 	}
 	public function cek_password_length($password)
-        {
+	{
 
-		  $output = "";
-          if (strlen($password) < 8 ) {
-            $output .= '<i style="color:red">Minimal 8 Karakter!</i>';
-          }
-          return $output;
-        }
-
-	
-        public function cek_passwords($password,$confirm_password){
-        	 $output = ""; 
-            if ( $password != $confirm_password) {
-            $output .= '<i style="color:red">Kata sandi baru tidak sama !</i>';
-          }
-          return $output;
-        }
-
-
-     public function get_sum_nilai($cond){
-
-		$this->db->select('SUM(nilai) as nilai');
-		$this->db->where('nip' , $cond); 
-		return $this->db->get($this->data['table_name'])->row();
- 		
-	}
-
-	public function get_max($cond){
-
-		$this->db->select('MAX(Y_C1) AS MAX1 , MAX(Y_C2) AS MAX2, MAX(Y_C3) AS MAX3, MAX(Y_C4) AS MAX4,MAX(Y_C5) AS MAX5');
-		$this->db->where('kd_perangkingan' , $cond); 
-		return $this->db->get($this->data['table_name'])->row();
- 		
-	}
-
-	public function get_min($cond){
-
-		$this->db->select('MIN(Y_C1) AS MIN1 , MIN(Y_C2) AS MIN2, MIN(Y_C3) AS MIN3, MIN(Y_C4) AS MIN4,MIN(Y_C5) AS MIN5');
-		$this->db->where('kd_perangkingan' , $cond); 
-		return $this->db->get($this->data['table_name'])->row();
- 		
-	}
-	public function get_jumlah($cond){
-
-		$this->db->select('kd_jalan ,count(Vi) as count, SUM(Vi) as jumlah');
-		$this->db->where('kd_perangkingan',$cond);
-		$this->db->group_by('kd_jalan');  
-		return $this->db->get($this->data['table_name'])->result();
- 		
-	}
-	public function get_jumlah2($cond){
-
-		$this->db->select('kd_jalan ,count(Vi) as count, SUM(Vi) as jumlah');
-		$this->db->where('kd_perangkingan',$cond);
-		$this->db->group_by('kd_jalan'); 
-		$this->db->order_by('jumlah', 'desc'); 
-		return $this->db->get($this->data['table_name'])->result();
- 		
-	}
-
-	public function get_total($cond){
-
-		$this->db->select('SUM(Vi) as total');
-		$this->db->where('kd_perangkingan' , $cond); 
-		return $this->db->get($this->data['table_name'])->row();
- 		
+		$output = "";
+		if (strlen($password) < 8) {
+			$output .= '<i style="color:red">Minimal 8 Karakter!</i>';
+		}
+		return $output;
 	}
 
 
-
+	public function cek_passwords($password, $confirm_password)
+	{
+		$output = "";
+		if ($password != $confirm_password) {
+			$output .= '<i style="color:red">Kata sandi baru tidak sama !</i>';
+		}
+		return $output;
+	}
 }
 
 /* End of file MY_Model.php */

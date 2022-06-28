@@ -9,6 +9,12 @@ class Laporan_m extends MY_Model
         $this->data['table_name'] = 'laporan_kegiatan';
     }
 
+    public function get_laporan($nip, $bulan_start, $bulan_end, $tahun_start, $tahun_end)
+    {
+        $query = $this->db->query('SELECT * FROM `laporan_kegiatan` WHERE nip = "' . $nip . '" and bulan >= ' . $bulan_start . ' and bulan <= ' . $bulan_end . ' and tahun >= ' . $tahun_start . ' and tahun <= ' . $tahun_end);
+        return $query->result();
+    }
+
     public function get_num_kegiatan($nip)
     {
         $num = 0;
