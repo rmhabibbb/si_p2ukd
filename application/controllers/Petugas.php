@@ -94,7 +94,7 @@ class Petugas extends MY_Controller
         if ($this->uri->segment(3)) {
             if ($this->Laporan_m->get_num_row(['id_laporan' => $this->uri->segment(3)]) == 1) {
                 $this->data['laporan'] = $this->Laporan_m->get_row(['id_laporan' => $this->uri->segment(3)]);
-                $this->data['list_kegiatan'] = $this->Kegiatan_m->get(['id_laporan' => $this->uri->segment(3)]);
+                $this->data['list_kegiatan'] = $this->Kegiatan_m->get_by_order('tanggal_kegiatan', 'asc', ['id_laporan' => $this->uri->segment(3)]);
 
 
                 $this->data['title']  = 'Laporan ' . $this->data['laporan']->bulan . '/' . $this->data['laporan']->tahun . ' - P2UKD';
@@ -118,35 +118,36 @@ class Petugas extends MY_Controller
     {
         if ($this->POST('tambah')) {
             $data = [
-                'keterangan' => $this->POST('ket'),
-                'bobot' => $this->POST('nilai'),
-                'id_kriteria' => $this->POST('id_kriteria')
+                'keterangan' => $this->POST('keterangan'),
+                'nama_kegiatan' => $this->POST('nama_kegiatan'),
+                'tanggal_kegiatan' => $this->POST('tanggal_kegiatan'),
+                'id_laporan' => $this->POST('id_laporan')
             ];
-            $this->Bobot_m->insert($data);
+            $this->Kegiatan_m->insert($data);
 
-            $this->flashmsg('BOBOT KRITERA BERHASIL DITAMBAH!', 'success');
-            redirect('operator/kriteria/' . $this->POST('id_kriteria'));
+            $this->flashmsg('Kegiatan berhasil ditambah!', 'success');
+            redirect('petugas/laporan/' . $this->POST('id_laporan'));
             exit();
         }
 
         if ($this->POST('edit')) {
             $data = [
-                'keterangan' => $this->POST('ket'),
-                'bobot' => $this->POST('nilai'),
-                'id_kriteria' => $this->POST('id_kriteria')
+                'keterangan' => $this->POST('keterangan'),
+                'nama_kegiatan' => $this->POST('nama_kegiatan'),
+                'tanggal_kegiatan' => $this->POST('tanggal_kegiatan'),
             ];
 
-            $this->Bobot_m->update($this->POST('id_bobot'), $data);
+            $this->Kegiatan_m->update($this->POST('id_kegiatan'), $data);
 
-            $this->flashmsg('DATA BERHASIL TERSIMPAN!', 'success');
-            redirect('operator/kriteria/' . $this->POST('id_kriteria'));
+            $this->flashmsg('Data kegiatan berhasil diubah!', 'success');
+            redirect('petugas/laporan/' . $this->POST('id_laporan'));
             exit();
         }
 
         if ($this->POST('hapus')) {
-            $this->Bobot_m->delete($this->POST('id_bobot'));
-            $this->flashmsg('DATA BOBOT KRITERA BERHASIL DIHAPUS!', 'success');
-            redirect('operator/kriteria/' . $this->POST('id_kriteria'));
+            $this->Kegiatan_m->delete($this->POST('id_kegiatan'));
+            $this->flashmsg('Data kegiatan berhasil dihapus!', 'success');
+            redirect('petugas/laporan/' . $this->POST('id_laporan'));
             exit();
         }
     }

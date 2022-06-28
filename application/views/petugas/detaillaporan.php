@@ -1,4 +1,4 @@
-<header class="page-header page-header-dark bg-success pb-10">
+<header class="page-header page-header-dark bg-primary pb-10">
     <div class="container-xl px-4">
         <div class="page-header-content pt-4">
             <div class="row align-items-center justify-content-between">
@@ -72,7 +72,7 @@
             <div class="card-header">
                 <h3 class="card-title">Kegiatan</h3>
             </div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#tambahkegiatan" class="btn btn-success">Tambah Kegiatan</button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#tambahkegiatan" class="btn btn-primary">Tambah Kegiatan</button>
 
             <table id="datatablesSimple">
                 <thead>
@@ -89,7 +89,7 @@
                     foreach ($list_kegiatan as $row) : ?>
                         <tr>
                             <td><?= $i++ ?></td>
-                            <td><?= $tdis->Kegiatan_m->get_tgl($row->tanggal_kegiatan) ?></td>
+                            <td><?= $this->Kegiatan_m->get_tgl($row->tanggal_kegiatan) ?></td>
                             <td><?= $row->nama_kegiatan ?></td>
                             <td><?= $row->keterangan ?></td>
                             <td>
@@ -231,7 +231,7 @@
                                     Keterangan
                                 </th>
                                 <td>
-                                    <textarea class="form-control" name="keterangan" required></textarea>
+                                    <textarea class="form-control" name="keterangan"></textarea>
                                 </td>
                             </tr>
                         </tbody>
@@ -244,3 +244,110 @@
         </div>
     </div>
 </div>
+
+
+<?php $i = 1;
+foreach ($list_kegiatan as $row) : ?>
+    <div class="modal fade" id="edit-<?= $row->id_kegiatan ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit Kegiatan</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url('petugas/kegiatan') ?>" method="Post">
+
+                        <input type="hidden" value="<?= $laporan->id_laporan ?>" name="id_laporan">
+                        <input type="hidden" value="<?= $row->id_kegiatan ?>" name="id_kegiatan">
+
+
+                        <table class="table table-bordered table-striped table-hover" style="max-height: 300px">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 30%">
+                                        Tanggal Kegiatan
+                                    </th>
+                                    <td>
+                                        <input value="<?= $row->tanggal_kegiatan ?>" type="date" class="form-control" name="tanggal_kegiatan" placeholder="Tanggal" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 30%">
+                                        Nama Kegiatan
+                                    </th>
+                                    <td>
+                                        <textarea class="form-control" name="nama_kegiatan" required><?= $row->nama_kegiatan ?></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 30%">
+                                        Keterangan
+                                    </th>
+                                    <td>
+                                        <textarea class="form-control" name="keterangan"><?= $row->keterangan ?></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn bg-success text-white" name="edit" value="Simpan">
+                </div>
+
+                <?php echo form_close() ?>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+
+
+
+<?php $i = 1;
+foreach ($list_kegiatan as $row) : ?>
+    <div class="modal fade" id="delete-<?= $row->id_kegiatan ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Hapus Kegiatan?</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="<?= base_url('petugas/kegiatan') ?>" method="Post">
+                    <input type="hidden" value="<?= $laporan->id_laporan ?>" name="id_laporan">
+                    <input type="hidden" value="<?= $row->id_kegiatan ?>" name="id_kegiatan">
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>ID Kegiatan</th>
+                                <th>
+                                    <?= $row->id_kegiatan ?>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Tanggal Kegiatan</th>
+                                <th>
+                                    <?= $this->Kegiatan_m->get_tgl($row->tanggal_kegiatan) ?>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Nama Kegiatan</th>
+                                <th>
+                                    <?= $row->nama_kegiatan ?>
+                                </th>
+                            </tr>
+
+
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-success btn-block text-white " name="hapus" value="Hapus">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>

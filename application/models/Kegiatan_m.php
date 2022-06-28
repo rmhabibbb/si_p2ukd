@@ -12,7 +12,7 @@ class Kegiatan_m extends MY_Model
     public function get_tgl($tgl)
     {
         $hari = date("D", strtotime($tgl));
-        $tanggal = date("d", strtotime($tgl));
+        $tanggal = date("j", strtotime($tgl));
         $bulan = date("m", strtotime($tgl));
         $tahun = date("Y", strtotime($tgl));
 
