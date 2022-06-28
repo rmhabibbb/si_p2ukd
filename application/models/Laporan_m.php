@@ -9,6 +9,17 @@ class Laporan_m extends MY_Model
         $this->data['table_name'] = 'laporan_kegiatan';
     }
 
+    public function get_num_kegiatan($nip)
+    {
+        $num = 0;
+        $list_laporan = $this->Laporan_m->get(['nip' => $nip]);
+        foreach ($list_laporan as $l) {
+            $num = $num + $this->Kegiatan_m->get_num_row(['id_laporan' => $l->id_laporan]);
+        }
+
+        return $num;
+    }
+
     public function get_namabulan($bln)
     {
         if ($bln == 1) {

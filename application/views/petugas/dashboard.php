@@ -52,7 +52,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-success mb-1">Kegiatan</div>
-                                                <div class="h1">0</div>
+                                                <div class="h1"><?= $this->Laporan_m->get_num_kegiatan($profil->nip) ?> </div>
 
                                             </div>
                                             <div class="ms-2"><i class="fas fa-user fa-2x text-gray-200"></i></div>
