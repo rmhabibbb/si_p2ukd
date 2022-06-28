@@ -40,66 +40,77 @@ class Petugas extends MY_Controller
     public function laporan()
     {
         if ($this->POST('tambah')) {
-            $data = [
-                'nama_kriteria' => $this->POST('nama_kriteria'),
-                'bobot_vektor' => $this->POST('bobot'),
-                'tipe' => $this->POST('tipe'),
-                'penilai' => $this->POST('penilai')
-            ];
-            $this->Kriteria_m->insert($data);
-            $id = $this->db->insert_id();
 
-            $this->flashmsg('KRITERA BERHASIL DITAMBAH!', 'success');
-            redirect('operator/kriteria/' . $id);
+            $cek = $this->Laporan_m->get_row(['nip' => $this->data['profil']->nip, 'bulan' => $this->POST('bulan'), 'tahun' => $this->POST('tahun')]);
+
+            if (isset($cek)) {
+                $this->flashmsg('Laporan telah ada, silahkan masukkan data kegiatan anda.', 'warning');
+                redirect('petugas/laporan/' . $cek->id_laporan);
+                exit();
+            }
+
+            $data = [
+                'bulan' => $this->POST('bulan'),
+                'tahun' => $this->POST('tahun'),
+                'nip' => $this->data['profil']->nip
+            ];
+
+            $this->Laporan_m->insert($data);
+            $id = $this->db->insert_id();
+            $this->flashmsg('Data berhasil dibuat, silahkan masukkan data kegiatan anda', 'success');
+            redirect('petugas/laporan/' . $id);
             exit();
         }
-
         if ($this->POST('edit')) {
+            $cek = $this->Laporan_m->get_row(['nip' => $this->data['profil']->nip, 'bulan' => $this->POST('bulan'), 'tahun' => $this->POST('tahun')]);
+
+            if (isset($cek) && $cek->id_laporan != $this->POST('id_laporan')) {
+                $this->flashmsg('Maaf, laporan pada bulan dan tahun yang anda pilih telah dibuat.', 'warning');
+                redirect('petugas/laporan/' . $this->POST('id_laporan'));
+                exit();
+            }
+
             $data = [
-                'nama_kriteria' => $this->POST('nama_kriteria'),
-                'bobot_vektor' => $this->POST('bobot'),
-                'tipe' => $this->POST('tipe'),
-                'penilai' => $this->POST('penilai')
+                'bulan' => $this->POST('bulan'),
+                'tahun' => $this->POST('tahun')
             ];
 
-            $this->Kriteria_m->update($this->POST('id_kriteria'), $data);
+            $this->Laporan_m->update($this->POST('id_laporan'), $data);
 
-            $this->flashmsg('DATA BERHASIL TERSIMPAN!', 'success');
-            redirect('operator/kriteria/' . $this->POST('id_kriteria'));
+            $this->flashmsg('Data laporan berhasil diubah!', 'success');
+            redirect('petugas/laporan/' . $this->POST('id_laporan'));
             exit();
         }
 
         if ($this->POST('hapus')) {
-            $id_kriteria = $this->POST('id_kriteria');
-            $this->Kriteria_m->delete($id_kriteria);
-            $this->flashmsg('Kriteria berhasil dihapus!', 'success');
-            redirect('operator/kriteria/');
+            $id_laporan = $this->POST('id_laporan');
+            $this->Laporan_m->delete($id_laporan);
+            $this->flashmsg('Laporan berhasil dihapus!', 'success');
+            redirect('petugas/laporan/');
             exit();
         }
 
 
         if ($this->uri->segment(3)) {
-            if ($this->Kriteria_m->get_num_row(['id_kriteria' => $this->uri->segment(3)]) == 1) {
-                $this->data['kriteria'] = $this->Kriteria_m->get_row(['id_kriteria' => $this->uri->segment(3)]);
-                $this->data['list_sub'] = $this->Bobot_m->get(['id_kriteria' => $this->uri->segment(3)]);
+            if ($this->Laporan_m->get_num_row(['id_laporan' => $this->uri->segment(3)]) == 1) {
+                $this->data['laporan'] = $this->Laporan_m->get_row(['id_laporan' => $this->uri->segment(3)]);
+                $this->data['list_kegiatan'] = $this->Kegiatan_m->get(['id_laporan' => $this->uri->segment(3)]);
 
 
-                $this->data['title']  = 'Kelola Kriteria - ' . $this->data['kriteria']->nama_kriteria . '';
-                $this->data['index'] = 3;
-                $this->data['content'] = 'operator/detailkriteria';
-                $this->template($this->data, 'operator');
+                $this->data['title']  = 'Laporan ' . $this->data['laporan']->bulan . '/' . $this->data['laporan']->tahun . ' - P2UKD';
+                $this->data['index'] = 2;
+                $this->data['content'] = 'petugas/detaillaporan';
+                $this->template($this->data, 'petugas');
             } else {
-                redirect('sekretariat/kriteria');
+                redirect('petugas/laporan');
                 exit();
             }
         } else {
-            $this->data['list_kriteria'] = $this->Kriteria_m->get();
-
-
-            $this->data['title']  = 'Kelola Data Kriteria';
-            $this->data['index'] = 3;
-            $this->data['content'] = 'operator/kriteria';
-            $this->template($this->data, 'operator');
+            $this->data['list_laporan'] = $this->Laporan_m->get(['nip' => $this->data['profil']->nip]);
+            $this->data['title']  = 'Data Laporan - P2UKD';
+            $this->data['index'] = 2;
+            $this->data['content'] = 'petugas/laporan';
+            $this->template($this->data, 'petugas');
         }
     }
 
